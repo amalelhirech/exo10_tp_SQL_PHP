@@ -78,32 +78,35 @@ a:hover {
 }
 
 .btn {
-    padding: 6px 10px;
-    border-radius: 6px;
-    margin-left: 8px;
-    font-size: 12px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 8px;
+    margin-right: 8px;
+    font-size: 13px;
+    text-decoration: none;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
 .modifier {
-    background-color: #ff66b2; 
+    background-color: #ec4899;
     color: white;
 }
 
 .modifier:hover {
-    background-color: #e0559c;
+    background-color: #db2777;
+    text-decoration: none;
 }
 
 .supprimer {
-    background-color: #ff4d4d; 
+    background-color: #ef4444;
     color: white;
 }
 
-
 .supprimer:hover {
-    background-color: #cc0000;
+    background-color: #dc2626;
+    text-decoration: none;
 }
-
 /* Partie de l'exo 10*/
 
 table {
@@ -128,10 +131,18 @@ td {
     padding: 16px;
     border-top: 1px solid #374151;
     font-size: 16px;
+    vertical-align: middle;
 }
 
 tr:hover {
     background-color: #1f2937;
+}
+
+.table-container {
+    overflow: hidden;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    margin-bottom: 30px;
 }
 
 </style>
@@ -162,7 +173,10 @@ foreach($etudiants as $etudiant) {
             <td>" . $etudiant->id_etudiant . "</td>
             <td>" . $etudiant->nom . "</td>
             <td>" . $etudiant->prenom . "</td>
-            <td>TEST</td>
+            <td>
+                <a class='btn modifier' href='Views/modif_etudiant.php?id=" . $etudiant->id_etudiant . "'>Modifier</a>
+                <a class='btn supprimer' href='Views/suppression_etudiant.php?id=" . $etudiant->id_etudiant . "'>Supprimer</a>
+            </td>
           </tr>";
 }
 
