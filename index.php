@@ -149,6 +149,14 @@ tr:hover {
 
 <?php
 
+session_start();
+
+if(isset($_SESSION['userId'])){
+    header("Location: dashboard.php");
+} else {
+    header("Location: login.php");
+}
+exit();
 
 
 $resultat = $dbPDO->prepare("SELECT id_etudiant, nom, prenom FROM etudiant");
