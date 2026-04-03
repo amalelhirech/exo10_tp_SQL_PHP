@@ -1,6 +1,13 @@
-
 <?php
 require_once "Model/pdo.php";
+session_start();
+
+
+if(!isset($_SESSION['userId'])){
+    header("Location: login.php");
+    exit();
+}
+
 ?>
 
 <style>
@@ -107,7 +114,6 @@ a:hover {
     background-color: #dc2626;
     text-decoration: none;
 }
-/* Partie de l'exo 10*/
 
 table {
     width: 100%;
@@ -144,27 +150,16 @@ tr:hover {
     box-shadow: 0 4px 14px rgba(0,0,0,0.12);
     margin-bottom: 30px;
 }
-
 </style>
 
 <?php
 
-session_start();
-
-if(isset($_SESSION['userId'])){
-    header("Location: dashboard.php");
-} else {
-    header("Location: login.php");
-}
-exit();
-
+echo "<p>Bienvenue <b>" . $_SESSION['nom'] . "</b> | <a href='logout.php'>Se déconnecter</a></p>";
 
 $resultat = $dbPDO->prepare("SELECT id_etudiant, nom, prenom FROM etudiant");
 $resultat->execute();
 
 $etudiants = $resultat->fetchAll(PDO::FETCH_OBJ);
-
-echo "<br>";
 
 echo "<h2>Liste des etudiants</h2>";
 echo "<div class='table-container'>";
@@ -191,35 +186,27 @@ foreach($etudiants as $etudiant) {
 echo "</table>";
 echo "</div>";
 
+
 $res = $dbPDO->prepare("SELECT nom_classe FROM classes"); 
 $res->execute();
-
 $classes = $res->fetchAll(PDO::FETCH_OBJ); 
 
-echo "<br> <h2> Liste de toutes les classes: </h2> <ul>";
-
+echo "<h2> Liste de toutes les classes: </h2> <ul>";
 foreach($classes as $classe) {
     echo "<li>" . $classe->nom_classe . "</li>";
 }
-
-
 echo "</ul>";
 
 
 $res = $dbPDO->prepare("SELECT nom , prenom FROM prof"); 
 $res->execute();
-
 $profs = $res->fetchAll(PDO::FETCH_OBJ); 
 
-echo "<br> <h2> Liste de toutes les profs : </h2> <ul>";
-
+echo "<h2> Liste de toutes les profs : </h2> <ul>";
 foreach($profs as $prof) {
     echo "<li>" . $prof->nom . " " . $prof->prenom . "</li>";
 }
-
-
 echo "</ul>";
-
 
 $resultat = $dbPDO->prepare("
     SELECT 
@@ -232,11 +219,9 @@ $resultat = $dbPDO->prepare("
     INNER JOIN classes c ON p.id_classe = c.id_classe
 ");
 $resultat->execute();
-
 $profs_infos = $resultat->fetchAll(PDO::FETCH_OBJ);
 
-echo "<br> <h2> Liste des professeurs avec leur matière et leur classe : </h2> <ul>";
-
+echo "<h2> Liste des professeurs avec leur matière et leur classe : </h2> <ul>";
 foreach($profs_infos as $prof) {
     echo "<li>" 
         . $prof->nom_prof . " " . $prof->prenom_prof
@@ -244,80 +229,41 @@ foreach($profs_infos as $prof) {
         . " - Classe : " . $prof->nom_classe
         . "</li>";
 }
-
 echo "</ul>";
-
-// PARTIE 3 
-
-/* $resultat = $dbPDO->prepare("INSERT INTO matiere(nom_matiere, id_prof) VALUES (:nom_matiere, :id_prof)");
-$resultat->execute([
-    'nom_matiere' => "Sport",
-    'id_prof' => 1
-]);
-
-echo "Matiere ajoutee"; */
 
 $res = $dbPDO->prepare("SELECT id_prof, nom, prenom FROM prof");
 $res->execute();
-
 $liste_profs = $res->fetchAll(PDO::FETCH_OBJ);
 
-// Formulaire
-
-echo "<br> <h2> Ajouter une matiere :</h2>";
-
+echo "<h2> Ajouter une matiere :</h2>";
 echo "<form action='Views/nouvelle_matiere.php' method='post'>
-
     <label for='nom_matiere'>Libelle :</label>
-    <input name='nom_matiere' id='nom_matiere' type='text'>
-
+    <input name='nom_matiere' id='nom_matiere' type='text' required>
     <label for='id_prof'>Prof :</label>
     <select name='id_prof' id='id_prof'>";
-    
 foreach($liste_profs as $prof) {
-    echo "<option value='" . $prof->id_prof . "'>"
-        . $prof->nom . " " . $prof->prenom .
-        "</option>";
+    echo "<option value='" . $prof->id_prof . "'>" . $prof->nom . " " . $prof->prenom . "</option>";
 }
-
 echo "</select>
-
     <button type='submit'>Valider</button>
-
 </form>";
 
 $res = $dbPDO->prepare("SELECT id_classe, nom_classe FROM classes");
 $res->execute();
-
 $classes_formulaire = $res->fetchAll(PDO::FETCH_OBJ);
 
-echo "<br> <h2> Ajouter un etudiant : </h2>";
-
+echo "<h2> Ajouter un etudiant : </h2>";
 echo "<form action='Views/nouvel_etudiant.php' method='post'>
-
     <label for='nom'>Nom :</label>
-    <input name='nom' id='nom' type='text'>
-
+    <input name='nom' id='nom' type='text' required>
     <label for='prenom'>Prenom :</label>
-    <input name='prenom' id='prenom' type='text'>
-
+    <input name='prenom' id='prenom' type='text' required>
     <label for='id_classe'>Classe :</label>
     <select name='id_classe' id='id_classe'>";
-
 foreach($classes_formulaire as $classe) {
     echo "<option value='" . $classe->id_classe . "'>" . $classe->nom_classe . "</option>";
 }
-
 echo "</select>
-
     <button type='submit'>Valider</button>
-
 </form>";
-
-
-
 ?>
-
-
-
-

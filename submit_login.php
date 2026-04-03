@@ -24,7 +24,7 @@ if(
             $_SESSION['email'] = $user['email'];
             $_SESSION['nom'] = $user['nom'];
 
-            header("Location: dashboard.php");
+            header("Location: index.php");
             exit();
 
         } else {
